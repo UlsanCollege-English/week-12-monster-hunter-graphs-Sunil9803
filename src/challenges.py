@@ -13,99 +13,103 @@ import heapq
 
 
 def build_hunter_map(edges: list[tuple[str, str]]) -> dict[str, list[str]]:
-    """Build an undirected adjacency list from route pairs.
+    """Build an undirected adjacency list from route pairs."""
 
-    Each tuple represents a two-way route between two monster sighting
-    locations.
+    graph: dict[str, list[str]] = {}
 
-    Args:
-        edges: A list of route pairs, such as
-            [("Old Theater", "Train Station")].
+    for start, end in edges:
 
-    Returns:
-        A dictionary where each key is a location and each value is a list
-        of neighboring locations.
+        if start not in graph:
+            graph[start] = []
 
-    Rules:
-        - Add both directions for each route.
-        - Include every location that appears in the input.
-        - Do not duplicate neighbors if the same route appears more than once.
-    """
-    raise NotImplementedError
+        if end not in graph:
+            graph[end] = []
+
+        if end not in graph[start]:
+            graph[start].append(end)
+
+        if start not in graph[end]:
+            graph[end].append(start)
+
+    return graph
 
 
 def build_weighted_hunter_map(
     edges: list[tuple[str, str, int]]
 ) -> dict[str, dict[str, int]]:
-    """Build an undirected weighted graph from route triples.
+    """Build an undirected weighted graph from route triples."""
 
-    Each tuple represents a two-way route with a positive danger score.
+    graph: dict[str, dict[str, int]] = {}
 
-    Args:
-        edges: A list of route triples, such as
-            [("Old Theater", "Train Station", 4)].
+    for start, end, weight in edges:
 
-    Returns:
-        A nested dictionary where graph[start][end] is the danger score.
+        if weight <= 0:
+            raise ValueError("Danger scores must be positive integers.")
 
-    Rules:
-        - Add both directions for each route.
-        - Danger scores must be positive integers.
-        - If danger score is 0 or negative, raise ValueError.
-        - If the same route appears more than once, keep the lowest score.
-    """
-    raise NotImplementedError
+        if start not in graph:
+            graph[start] = {}
+
+        if end not in graph:
+            graph[end] = {}
+
+        # Keep smallest weight if duplicate route exists
+        if end not in graph[start] or weight < graph[start][end]:
+            graph[start][end] = weight
+            graph[end][start] = weight
+
+    return graph
 
 
 def map_summary(graph: dict[str, list[str]]) -> dict[str, int]:
-    """Return the number of locations and undirected routes.
+    """Return the number of locations and undirected routes."""
 
-    Args:
-        graph: An undirected adjacency list.
+    locations = len(graph)
 
-    Returns:
-        A dictionary with:
-            - "locations": number of locations
-            - "routes": number of undirected routes
+    total_edges = 0
 
-    Example:
-        {
-            "A": ["B", "C"],
-            "B": ["A"],
-            "C": ["A"],
-        }
+    for neighbors in graph.values():
+        total_edges += len(neighbors)
 
-        returns {"locations": 3, "routes": 2}
-    """
-    raise NotImplementedError
+    routes = total_edges // 2
+
+    return {
+        "locations": locations,
+        "routes": routes,
+    }
 
 
 def most_connected_location(graph: dict[str, list[str]]) -> str | None:
-    """Return the location with the most neighbors.
+    """Return the location with the most neighbors."""
 
-    Args:
-        graph: An undirected adjacency list.
+    if not graph:
+        return None
 
-    Returns:
-        The location with the most neighbors.
-        If the graph is empty, return None.
-        If there is a tie, return the alphabetically first location.
-    """
-    raise NotImplementedError
+    best_location = None
+    max_connections = -1
+
+    for location in sorted(graph.keys()):
+
+        connections = len(graph[location])
+
+        if connections > max_connections:
+            max_connections = connections
+            best_location = location
+
+    return best_location
 
 
 def priority_hunt_order(reports: list[tuple[int, str]]) -> list[str]:
-    """Return monster sighting locations from most urgent to least urgent.
+    """Return monster sighting locations from most urgent to least urgent."""
 
-    Lower priority number means more urgent.
+    heap = []
 
-    Args:
-        reports: A list of tuples in the form (priority, location).
+    for priority, location in reports:
+        heapq.heappush(heap, (priority, location))
 
-    Returns:
-        A list of locations ordered from lowest priority number to highest.
+    result = []
 
-    Requirement:
-        Use heapq.
-    """
-    raise NotImplementedError
+    while heap:
+        _, location = heapq.heappop(heap)
+        result.append(location)
+
+    return result
