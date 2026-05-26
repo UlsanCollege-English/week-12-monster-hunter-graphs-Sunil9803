@@ -1,49 +1,49 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/80z-ZS6n)
-
 # Week 12: Monster Hunter Graphs
 
 ## Student
 
-Name: Sunil Khadka
+Name: Your Name
 
-Student ID: TODO
+Student ID: Your Student ID
 
 ---
 
 ## Summary
 
-This assignment builds and analyzes monster hunter graphs using adjacency lists and weighted graphs.  
-The locations in the graph represent monster sighting areas, while the routes represent paths between those locations.  
-The program creates both normal and weighted graphs, counts locations and routes, finds the most connected location, and orders monster hunt reports by urgency using a heap priority queue.  
-The hardest function was building the weighted graph because duplicate routes had to keep only the lowest danger score.
+This assignment builds graph helper functions for a monster hunter map system.  
+The graph represents locations in the city where monster sightings have been reported.  
+The routes between locations are stored using adjacency lists and weighted graphs.  
+The program can summarize the graph, find the most connected location, and organize urgent monster reports using a priority queue with `heapq`.  
+The hardest function was building the weighted graph because duplicate routes had to keep the lowest danger score.
 
 ---
 
 ## Approach
 
 - `build_hunter_map`:
-  - Created an empty dictionary for the graph.
-  - Added both directions for each route because the graph is undirected.
-  - Used membership checks to avoid duplicate neighbors.
+  - I created an adjacency list dictionary.
+  - For each route, I added both directions because the graph is undirected.
+  - I checked for duplicate neighbors before adding them.
 
 - `build_weighted_hunter_map`:
-  - Built a nested dictionary structure.
-  - Added routes in both directions.
-  - Checked for invalid weights and raised `ValueError` for zero or negative scores.
-  - Kept the smallest danger score if duplicate routes appeared.
+  - I used nested dictionaries for weighted edges.
+  - I added routes in both directions.
+  - I raised `ValueError` for zero or negative weights.
+  - If a duplicate route appeared, I kept the smaller danger score.
 
 - `map_summary`:
-  - Counted total locations using `len(graph)`.
-  - Counted all neighbor connections and divided by 2 because routes are undirected.
+  - I counted locations using the number of graph keys.
+  - I counted all neighbors and divided by 2 because routes are undirected.
 
 - `most_connected_location`:
-  - Compared neighbor counts for each location.
-  - Used alphabetical order to break ties.
+  - I checked the number of neighbors for each location.
+  - I tracked the largest connection count.
+  - I used alphabetical order to break ties.
 
 - `priority_hunt_order`:
-  - Used `heapq` as a min-heap.
-  - Pushed all reports into the heap.
-  - Removed reports in priority order and stored the locations.
+  - I used `heapq` as a priority queue.
+  - Lower priority numbers were removed first.
+  - I stored the ordered locations in a result list.
 
 ---
 
@@ -51,43 +51,38 @@ The hardest function was building the weighted graph because duplicate routes ha
 
 ### `build_hunter_map`
 
-- Time: `O(E)`
-- Space: `O(V + E)`
+- Time: O(E)
+- Space: O(V + E)
 - Why:
-  - Each edge is processed once.
-  - The graph stores all locations and routes.
+  - Each edge is processed once and stored in the adjacency list.
 
 ### `build_weighted_hunter_map`
 
-- Time: `O(E)`
-- Space: `O(V + E)`
+- Time: O(E)
+- Space: O(V + E)
 - Why:
-  - Each weighted edge is checked and inserted once.
-  - The nested dictionary stores all routes and weights.
+  - Each weighted edge is processed once and stored in nested dictionaries.
 
 ### `map_summary`
 
-- Time: `O(V + E)`
-- Space: `O(1)`
+- Time: O(V + E)
+- Space: O(1)
 - Why:
-  - The function loops through every node and neighbor.
-  - Only a few counters are used.
+  - The function loops through all adjacency lists to count routes.
 
 ### `most_connected_location`
 
-- Time: `O(V)`
-- Space: `O(1)`
+- Time: O(V)
+- Space: O(1)
 - Why:
-  - Each location is checked once.
-  - No extra data structure grows with input size.
+  - Each location is checked once to compare neighbor counts.
 
 ### `priority_hunt_order`
 
-- Time: `O(n log n)`
-- Space: `O(n)`
+- Time: O(N log N)
+- Space: O(N)
 - Why:
-  - Heap insertion and removal both take `log n`.
-  - The heap stores all reports.
+  - Heap insertion and removal each take logarithmic time.
 
 ---
 
@@ -110,3 +105,28 @@ Paste the result of your test run.
 
 ```bash
 pytest -q
+```
+
+Result:
+
+```text
+16 passed in 0.09s
+```
+
+---
+
+## Assistance & Sources
+
+AI used? Yes
+
+If yes, what did it help with?
+
+- Understanding graph logic
+- Reviewing adjacency list structure
+- Explaining complexity
+- Debugging test failures
+
+Other sources used:
+
+- Class lecture notes
+- Python documentation for `heapq`
